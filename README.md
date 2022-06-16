@@ -3,4 +3,4 @@ efsfs
 dfsdfs
 
 
-dkssudgk printf("\n")tpdy
+dkssudgk \n tpdy
