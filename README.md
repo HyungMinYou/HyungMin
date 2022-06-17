@@ -101,12 +101,69 @@ if segue.identifier == "sgDetail" {
 
 
 
-# 14장 < AVAudioPlayer >
-- iOS에서는 기본적으로 음악 재생 앱과 녹음 앱을 제공합니다. 오디오 파일을 재생할 수 있다면 벨소리나 알람과 같이 각종 소리와 관련된 다양한 작업을 할 수 있습니다.
-- 또한 일정 관리 앱에 녹음 기능을 추가해 목소리로 메모를 하는 등 메인 기능이 아닌 서브 기능으로도 사용할 수 있습니다. 오디오를 재생하는 방법 중 가장 쉬운 방법은 AVAudioPlayer를 사용하는 것입니다.<br><br>
+# 14장 <비디오 재생 앱>
+- 비디오 플레이어는 아이폰 사용자들이 가장 많이 사용하는 앱 중의 하나입니다.
+- AVPlayerViewController를 사용하면 앱 내부에 저장되어 있는 비디오 파일뿐만 아니라 외부에 링크된 비디오 파일도 간단하게 재생할 수 있습니다.<br><br>
 
 
 코드 설명
 -------------------------
+```
+import AVKit
+```
+1. 비디오 관련 헤더 파일을 추가합니다.<br><br><br>
+
+------------------------
+```
+@IBAction func btnPlayInternalMovie(_ sender: UIButton) {
+    let filePath:String? = Bundle.main.path(forResource: "FastTyping", ofType: "mp4")
+    let url = NSURL(fileURLWithPath: filePath!)
+    
+    let playerController = AVPlayerViewController()
+    
+    let player = AVPlayer(url: url as URL)
+    playerController.player = player
+    
+    self.present(playerController, animated: true) {
+        player.play()
+    }
+}
+```
+1. 비디오 파일명을 사용하여 비디오가 저장된 앱 내부의 파일 경로를 받아옵니다.<br>
+2. 앱 내부의 파일명을 NSURL 형식으로 변경합니다.<br>
+3. AVPlayerViewController의 인스턴스를 생성합니다.<br>
+4. 앞에서 얻은 비디오 URL로 초기화된 AVPlayer의 인스턴스를 생성합니다.<br>
+5. AVPlayerViewController의 player 속성에서 생성한 AVPlayer 인스턴스를 할당합니다.<br>
+6. 비디오를 재생합니다.<br><br><br>
+
+-----------------------
+```
+let url = NSURL(string: "https://dl.dropboxusercontent.com/s/e38auz050w2mvud/Fireworks.mp4")!
+
+let playerController = AVPlayerViewController()
+
+let player = AVPlayer(url: url as URL)
+playerController.player = player
+
+self.present(playerController, animated: true) {
+   player.play()
+}
+```
+1. 외부에 링크된 비디오를 재생하는 코드입니다. 외부에 링크된 비디오를 재생하는 방법은 앱 내부 비디오를 재생하는 방법에서 url을 얻는 방법만 다르고 그외의 방법은 모두 동일합니다.<br><br><br>
+
+------------------------
+```
+private func playVideo(url: NSURL) {        //url을 인수로 받는 playVideo라는 함수를 만듭니다.
+}
+```
+1. 비디오 재생 함수 코드입니다.<br><br><br>
+
+---------------------
+```
+playVideo(url: url)
+```
+1. 위 외부에 링크된 비디오를 재생하는 코드 부분을 playVideo(url: url)로 대체합니다. 이 코드는 url을 얻은 후 playVideo 함수를 호출합니다. 이렇게 하면 전체 소스가 훨씬 간략해지고 수정하기도 편리합니다.
+
+
 
 
