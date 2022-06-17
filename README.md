@@ -118,15 +118,170 @@ audioFile = Bundle.main.url(forResource: " ", withExtension: "mp3")
 func initPlay() {
 }
 ```
-오디오 재생을 초기화하는 함수입니다.
+오디오 재생을 초기화하는 함수입니다.<br><br><br>
 
+--------------------
+```
+slvolume.maximumValue = MAX_VOLUME
+slvolume.value = 1.0
+pvProgressPlay.progress = 0
 
+audioPlayer.delegate = self
+audioPlayer.prepareToPlay()
+audioPlayer.volume = slVolume.value
+```
+1. 슬라이더의 최대 볼륨을 상수 MAX_VOLUME인 10.0으로 초기화합니다.
+2. 슬라이더의 볼륨을 1.0으로 초기화합니다.
+3. 프로그레스 뷰의 진행을 0으로 초기화합니다.
+4. audioPlayer의 델리게이트를 self로 합니다.
+5. prepareToPlay()를 실행합니다.
+6. audioPlayer의 볼륨을 방금 앞에서 초기화한 슬라이더의 볼륨 값 1.0으로 초기화합니다.<br><br><br>
 
+-------------------
+```
+func convertNSTimeInterval2String(_ time:TimeInterval) -> String {              // "00:00" 형태로 바꾸기 위해 TimeInterval 값을 받아 문자열로 돌려보내는 함수
+    let min = Int(time/60)
+    let sec = Int(time.truncatingRemainder(dividingBy: 60))
+    let strTime = String(format: "%02d:%02d", min, sec)
+    return strTime
+```
+1. 재생 시간의 매개변수인 time 값을 60으로 나눈 '몫'을 정수 값으로 변환하여 상수 min 값에 초기화합니다.
+2. time 값을 60으로 나눈 '나머지' 값을 정수 값으로 변환하여 상수 sec 값에 초기화합니다.
+3. 이 두 값을 활용해 "%02d:%02d" 형태의 문자열(String)로 변환하여 상수 strTime에 초기화합니다.
+4. 이 값을 호출한 함수로 돌려보냅니다.<br><br><br>
 
+------------------
+```
+audioPlayer.play()
+setPlayButtons(false, pause: true, stop: true)
+```
+1. audioPlayer.play 함수를 실행해 오디오를 재생합니다.
+2. [Play] 버튼은 비활성화, 나머지 두 버튼은 활성화합니다.<br><br><br>
 
+-----------------
+```
+audioPlayer.pause()
+setPlayButtons(true, pause: false, stop: true)
+```
+1. audioPlayer.pause 함수를 실행해 오디오를 잠시 멈춥니다.
+2. [Pause] 버튼은 비활성화, 나머지 두 버튼은 활성화합니다.<br><br><br>
 
+-----------------
+```
+audioPlayer.stop()
+setPlayButtons(true, pause: false, stop: false)
+```
+1. audioPlayer.stop 함수를 실행해 오디오를 정지합니다.
+2. [Play] 버튼은 활성화, 나머지 두 버튼은 비활성화합니다.<br><br><br>
 
+-------------------
+```
+let timePlayerSelector:Selector = #selector(ViewController.updatePlayTime)
+```
+1. 재생 타이머를 위한 상수를 추가합니다.<br>
+*# selector 중요 (함수안에 다른 함수를 호출하고 싶을 때 사용* <br><br><br>
 
+----------------
+```
+audioPlayer.volume = slVolume.value
+```
+볼륨 조절하는 코드이며 화면의 슬라이더를 터치해 좌우로 움직이면 볼륨이 조절되도록 합니다.<br><br><br>
+
+---------------
+```
+var audioRecorder : AVAudioRecorder!
+var isRecordMode = false
+```
+1. audioRecorder 인스턴스를 추가합니다.
+2. 현재 '녹음 모드'라는 것을 나타낼 isRecordMode를 추가합니다. 기본값은 false로 하여 처음 앱을 실행했을 때 '녹음 모드'가 아닌 '재생 모드'가 나타나게 합니다.<br><br><br>
+
+---------------
+```
+func selectAudioFile() {
+    if !isRecordMode {
+      audioFile = Bundle.main.url(forResource: " ", withExtension: "mp3")
+    } else {
+       let documentDirectory = FileManager.default.urls
+          (for: .documentDirectory, in: .userDomainMask)[0]
+       audioFile = documentDirectory.appendingPathComponent
+          ("recordFile.m4a")
+    }
+}
+```
+1. 재생 모드일 때는 오디오 파일인 " "가 선택됩니다.
+2. 녹음 모드일 때는 새 파일인 "recordFile.m4a"가 생성됩니다.<br><br><br>
+
+----------------
+```
+override func viewDidLoad() {
+    super.viewDidLoad()
+    selectAudioFile()
+    if !isRecordMode {
+        initPlay()
+        btnRecord.isEnabled = false
+        lblRecordTime.isEnabled = false
+    } else {
+        initRecord()
+    }
+}
+```
+1. if문의 조건이 '!isRecordMode'입니다. 이는 '녹음 모드가 아니라면'이므로 재생 모드를 말합니다. 따라서 initPlay 함수를 호출합니다.
+2. 조건에 해당하는 것이 재생 모드이므로 [Record] 버튼과 재생 시간은 비활성화로 설정합니다.
+3. 조건에 해당하지 않는 경우, 이는 '녹음 모드라면'이므로 initRecord 함수를 호출합니다.<br><br><br>
+
+------------------
+```
+func initRecord() {
+    let recordSettings = [
+        AVFormatIDKey : NSNumber(value: kAudioFormatAppleLossless as UInt32),
+        AVEncoderAudioQualityKey : AVAudioQuality.max.rawValue,
+        AVEncoderBitRateKey : 320000,
+        AVNumberOfChannelsKey : 2,
+        AVSampleRateKey : 44100.0] as [String : Any]
+     do {
+          audioRecorder = try AVAudioRecorder(url: audioFile, settings: recordSettings)
+     } catch let error as NSError {
+          print("Error-initRecord : \(error)")
+     }
+     
+     audioRecorder.delegate = self
+     audioRecorder.isMeteringEnabled = true
+     audioRecorder.prepareToRecord()
+     
+     slVolume.value = 1.0
+     audioPlayer.volume = slVolume.value
+     lblEndTime.text = convertNSTimeInterval2String(0)
+     lblCurrentTime.text = convertNSTimeInterval2String(0)
+     setPlayButtons(false, pause: false, stop: false)
+     
+     let session = AVAudioSession.sharedInstance()
+     do {
+          try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+     } catch let error as NSError {
+          print(" Error-setCategory : \(error)")
+     }
+     do {
+          try session.setActive(true)
+     } catch let error as NSError {
+          print(" Error-setCategory : \(error)")
+     }
+}
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+```
 
 <br><br><br><br><br><br><br>
 
@@ -194,7 +349,4 @@ private func playVideo(url: NSURL) {        //url을 인수로 받는 playVideo�
 playVideo(url: url)
 ```
 위 외부에 링크된 비디오를 재생하는 코드 부분을 playVideo(url: url)로 대체합니다. 이 코드는 url을 얻은 후 playVideo 함수를 호출합니다. 이렇게 하면 전체 소스가 훨씬 간략해지고 수정하기도 편리합니다.
-
-
-
 
