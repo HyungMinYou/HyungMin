@@ -34,13 +34,13 @@ class TableViewController: UITableViewController {
 items.remove(at: (indexPath as NSIndexPath).row)
 itemsImageFile.remove(at: (indexPath as NSIndexPath).row)
 ```
-1. 선택한 셀을 삭제하는 코드입니다.<br><br><br>
+선택한 셀을 삭제하는 코드입니다.<br><br><br>
 
 -----------------------------
 ```
 self.navigationItem.leftBarButtonItem = self.editButtonItem
 ```
-1. 바 버튼으로 목록 삭제 동작 코드이며 [edit] 버튼을 왼쪽에 추가하였습니다.<br><br><br>
+바 버튼으로 목록 삭제 동작 코드이며 [edit] 버튼을 왼쪽에 추가하였습니다.<br><br><br>
 
 --------------------------------
 ```
@@ -66,7 +66,7 @@ itemsImageFIle.insert(itemImageToMove, at: (to as NSIndexPath).row)
     tfAddItem.text=""                              //텍스트 필드의 내용을 지웁니다.
     _ = navigationController?.popViewController(animated: true)         //테이블 뷰로 돌아갑니다.
 ```
-1. 새 목록을 추가하는 코드입니다.<br><br><br>
+새 목록을 추가하는 코드입니다.<br><br><br>
 
 
 -------------------------------
@@ -78,7 +78,7 @@ if segue.identifier == "sgDetail" {
     detailView.receiveItem(items[((indexPath as NSIndexPath?)?.row)!])
     }
 ```
-1. 세그웨이를 이용하여 뷰를 전환하는 것과 같은 방법을 사용합니다.<br><br><br><br><br><br><br>
+세그웨이를 이용하여 뷰를 전환하는 것과 같은 방법을 사용합니다.<br><br><br><br><br><br><br>
 
 
 
@@ -90,14 +90,45 @@ if segue.identifier == "sgDetail" {
 코드 설명
 -------------------------
 ```
+import UIKit
+import AVFoundation
 
+class ViewController: UIViewController, AVAudioPlayerDelegate{
 ```
+오디오를 재생하려면 헤더 파일과 델리게이트가 필요하므로 'AVFoundation'을 불러오고, 'AVAudioPlayerDelegate' 선언을 추가합니다.<br>
+
+---------------------
+```
+var audioPlayer : AVAudioPlayer!          //AVAudioPlayer 인스턴스 변수
+var audioFile : URL!                      //재생할 오디오의 파일명 변수
+let MAX_VOLUME : Float = 10.0             //최대 볼륨, 실수형 상수
+var progressTimer : Timer!                //타이머를 위한 변수
+```
+<br><br><br>
+
+
+---------------------
+```
+audioFile = Bundle.main.url(forResource: " ", withExtension: "mp3")
+```
+추가한 오디오 파일명의 .mp3를 뺀 파일명을 " " 안에 입력합니다.<br><br><br>
+
+-----------------
+```
+func initPlay() {
+}
+```
+오디오 재생을 초기화하는 함수입니다.
 
 
 
 
 
 
+
+
+
+<br><br><br><br><br><br><br>
 
 
 
@@ -111,7 +142,7 @@ if segue.identifier == "sgDetail" {
 ```
 import AVKit
 ```
-1. 비디오 관련 헤더 파일을 추가합니다.<br><br><br>
+비디오 관련 헤더 파일을 추가합니다.<br><br><br>
 
 ------------------------
 ```
@@ -149,20 +180,20 @@ self.present(playerController, animated: true) {
    player.play()
 }
 ```
-1. 외부에 링크된 비디오를 재생하는 코드입니다. 외부에 링크된 비디오를 재생하는 방법은 앱 내부 비디오를 재생하는 방법에서 url을 얻는 방법만 다르고 그외의 방법은 모두 동일합니다.<br><br><br>
+외부에 링크된 비디오를 재생하는 코드입니다. 외부에 링크된 비디오를 재생하는 방법은 앱 내부 비디오를 재생하는 방법에서 url을 얻는 방법만 다르고 그외의 방법은 모두 동일합니다.<br><br><br>
 
 ------------------------
 ```
 private func playVideo(url: NSURL) {        //url을 인수로 받는 playVideo라는 함수를 만듭니다.
 }
 ```
-1. 비디오 재생 함수 코드입니다.<br><br><br>
+비디오 재생 함수 코드입니다.<br><br><br>
 
 ---------------------
 ```
 playVideo(url: url)
 ```
-1. 위 외부에 링크된 비디오를 재생하는 코드 부분을 playVideo(url: url)로 대체합니다. 이 코드는 url을 얻은 후 playVideo 함수를 호출합니다. 이렇게 하면 전체 소스가 훨씬 간략해지고 수정하기도 편리합니다.
+위 외부에 링크된 비디오를 재생하는 코드 부분을 playVideo(url: url)로 대체합니다. 이 코드는 url을 얻은 후 playVideo 함수를 호출합니다. 이렇게 하면 전체 소스가 훨씬 간략해지고 수정하기도 편리합니다.
 
 
 
