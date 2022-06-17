@@ -31,5 +31,64 @@ class TableViewController: UITableViewController {
 
 
 ```
+items.remove(at: (indexPath as NSIndexPath).row)
+itemsImageFile.remove(at: (indexPath as NSIndexPath).row)
+```
+1. 선택한 셀을 삭제하는 코드입니다.<br><br><br>
+
 
 ```
+self.navigationItem.leftBarButtonItem = self.editButtonItem
+```
+1. 바 버튼으로 목록 삭제 동작 코드이며 [edit] 버튼을 왼쪽에 추가하였습니다.<br><br><br>
+
+
+```
+let itemToMove = items[(fromIndexPath as NSIndexPath).row]
+let itemImageToMove = itemsImageFile[(fromIndexPath as NSIndexPath).row]
+items.remove(at: (fromIndexPath as NSIndexPath).row)
+itemsImageFile.remove(at: (fromIndexPath as NSIndexPath).row)
+items.insert(itemToMove, at: (to as NSIndexPath).row)
+itemsImageFIle.insert(itemImageToMove, at: (to as NSIndexPath).row)
+```
+1. 이동할 아이템의 위치를 itemToMove에 저장합니다.<br>
+2. 이동할 아이템의 이미지를 itemImageToMove에 저장합니다.<br>
+3. 이동할 아이템을 삭제합니다. 이때 삭제한 아이템 뒤의 아이템들의 인덱스가 재정렬됩니다.<br>
+4. 이동할 아이템의 이미지를 삭제합니다. 이때 삭제한 아이템 이미지 뒤의 아이템 이미지들의 인덱스가 재정렬됩니다.<br>
+5. 삭제된 아이템을 이동할 위치로 삽입합니다. 또한 삽입한 아이템 뒤의 아이템들의 인덱스가 재정렬됩니다.<br>
+6. 삭제된 아이템의 이미지를 이동할 위치로 삽입합니다. 또한 삽입한 아이템 이미지 뒤의 아이템 이미지들의 인덱스가 재정렬됩니다.<br><br><br>
+
+
+```
+@IBAction func btnAddItem(_ sender: UIButton) {
+    items.append(tfAddItem.text!)                  //items에 텍스트 필드의 텍스트 값을 추가합니다.
+    itemsImageFile.append("clock.png")             //itemsImageFile에는 무조건 'clock.png' 파일을 추가합니다.
+    tfAddItem.text=""                              //텍스트 필드의 내용을 지웁니다.
+    _ = navigationController?.popViewController(animated: true)         //테이블 뷰로 돌아갑니다.
+```
+1. 새 목록을 추가하는 코드입니다.<br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
